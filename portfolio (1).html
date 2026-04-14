@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMU A LOCI Portfolio</title>
+  <style>
+    :root {
+      --cmu-red: #a50021;
+      --bg: #fffdf8;
+      --surface: #f7f2ec;
+      --surface-strong: #e9dfd1;
+      --text: #1d1b1a;
+      --text-muted: #5f5a55;
+      --accent: #002d72;
+      --accent-soft: #dce7ff;
+      --shadow: 0 26px 60px rgba(3,18,43,0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top right, rgba(165,0,33,0.1), transparent 26%),
+                  radial-gradient(circle at left center, rgba(0,45,114,0.08), transparent 25%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .topbar {
+      width: 100%; padding: 1rem 2rem; background: var(--cmu-red); color: #fff;
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    main { max-width: 1230px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+    .section-head {
+      max-width: 720px; margin-bottom: 1.5rem;
+    }
+    .eyebrow { display: inline-flex; padding: 0.45rem 0.85rem; background: rgba(165,0,33,0.1);
+      color: var(--cmu-red); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+      border-radius: 999px; margin-bottom: 1rem;
+    }
+    h1, h2, h3 { margin: 0; }
+    h1 { font-size: clamp(2.4rem, 4vw, 4rem); letter-spacing: -0.05em; line-height: 1.02; }
+    h2 { font-size: clamp(2rem, 3.2vw, 3rem); }
+    p { color: var(--text-muted); }
+    .crossword-section, .timeline-section { margin-top: 3rem; padding: 2rem; border-radius: 32px; background: rgba(255,255,255,0.8); box-shadow: var(--shadow); backdrop-filter: blur(10px); }
+    .crossword-grid-wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 2rem; align-items: start; }
+    .crossword-board { background: #fff; padding: 1.2rem; border-radius: 24px; border: 1px solid rgba(0,0,0,0.06); }
+    .grid { display: grid; grid-template-columns: repeat(11, minmax(42px, 42px)); gap: 4px; justify-content: center; }
+    .cell, .cell.block { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 12px; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; }
+    .cell { background: #fff; border: 1px solid rgba(0,0,0,0.12); }
+    .cell input { width: 100%; height: 100%; border: none; text-align: center; font-size: 1rem; font-weight: 700; background: transparent; color: var(--text); text-transform: uppercase; outline: none; }
+    .cell.block { background: #1d1b1a; border: none; }
+    .cell.correct { background: #dff3e8; border-color: #6ba46f; }
+    .cell.incorrect { background: #ffe5e5; border-color: #d14444; }
+    .clue-panel { display: grid; gap: 1rem; }
+    .clue-list { background: #faf5ef; padding: 1rem; border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); }
+    .clue-list h3 { margin-bottom: 0.75rem; font-size: 1rem; color: var(--accent); }
+    .clue-list ol { margin: 0; padding-left: 1.1rem; color: var(--text-muted); }
+    .clue-list li { margin-bottom: 0.75rem; font-size: 0.94rem; }
+    .toolbar { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .btn { border: none; cursor: pointer; border-radius: 999px; padding: 0.95rem 1.3rem; font-size: 0.95rem; font-weight: 700; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid rgba(0,0,0,0.08); }
+    .timeline-header { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+    .timeline-lines { position: relative; padding-left: 2.5rem; }
+    .timeline-lines::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, rgba(165,0,33,0.95), rgba(0,45,114,0.45)); border-radius: 999px; }
+    .timeline-item { position: relative; display: grid; gap: 0.5rem; margin-bottom: 2rem; padding: 1.2rem 1.4rem 1.2rem 2.4rem; background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(249,242,233,0.98)); border-radius: 24px; border: 1px solid rgba(0,0,0,0.06); }
+    .timeline-item::before { content: ''; position: absolute; left: -0.55rem; top: 1.35rem; width: 16px; height: 16px; border-radius: 50%; background: var(--cmu-red); border: 4px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
+    .timeline-item span { display: inline-flex; align-items: center; justify-content: center; width: 2.6rem; height: 2.6rem; border-radius: 16px; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.45rem; }
+    .timeline-item h3 { font-size: 1.05rem; margin-bottom: 0.35rem; }
+    .timeline-item p { margin: 0; color: var(--text-muted); }
+    .timeline-item a {
+      color: var(--cmu-red);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .timeline-item a:hover {
+      text-decoration: underline;
+    }
+    @media(max-width: 900px) {
+      main { padding: 1.5rem; }
+      .crossword-grid-wrap { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(11, minmax(36px, 36px)); gap: 3px; }
+      .cell, .cell.block { width: 36px; height: 36px; border-radius: 10px; }
+    }
+    @media(max-width: 640px) {
+      .topbar { text-align: center; }
+      .timeline-item { padding-left: 1.6rem; }
+      .timeline-lines { padding-left: 1.8rem; }
+      .timeline-lines::before { left: 14px; }
+      .timeline-item::before { left: -0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">CMU A LOCI — Carnegie Mellon University</div>
+  <main>
+    <section class="crossword-section" id="crossword">
+      <div class="section-head">
+        <div class="eyebrow">CMU x A LOCI</div>
+        <h1>Unlock the story of my journey with a crossword.</h1>
+        <p>This top section is built like a puzzle: fill in the key words that shaped my path to Carnegie Mellon and the A LOCI learning community.</p>
+      </div>
+      <div class="crossword-grid-wrap">
+        <div class="crossword-board">
+          <div class="grid" id="crosswordGrid"></div>
+        </div>
+        <aside class="clue-panel">
+          <div class="clue-list">
+            <h3>Across</h3>
+            <ol id="acrossClues"></ol>
+          </div>
+          <div class="clue-list">
+            <h3>Down</h3>
+            <ol id="downClues"></ol>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-primary" id="checkButton">Check answers</button>
+            <button class="btn btn-secondary" id="revealButton">Reveal puzzle</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="timeline-section" id="timeline">
+      <div class="timeline-header">
+        <div class="eyebrow">Vertical timeline</div>
+        <h2>The story after the crossword.</h2>
+        <p>Each milestone is a step toward CMU, A LOCI, and the activities that shaped the journey.</p>
+      </div>
+      <div class="timeline-lines" id="timelineList"></div>
+    </section>
+  </main>
+
+  <script>
+    const layout = [
+      'CMU....LOCI',
+      'O..R...A..',
+      'L..E...M..',
+      'L.O..N...I',
+      'E..SEARCH.',
+      'G..A...C..',
+      'E..I...H..',
+      '.AIO......',
+      '...T..U..',
+      '....CMU..',
+      '...........'
+    ];
+
+    const entries = [
+      { id:'A1', clue:'The university initials that start every CMU story.', row:1, col:1, dir:'across', answer:'CMU' },
+      { id:'A2', clue:'The collaborative learning initiative at CMU.', row:1, col:8, dir:'across', answer:'LOCI' },
+      { id:'A3', clue:'A research-focused word that explains one of my main interests.', row:5, col:3, dir:'across', answer:'RESEARCH' },
+      { id:'A4', clue:'A strong discipline for logic, numbers, and systems at CMU.', row:8, col:2, dir:'across', answer:'AI' },
+      { id:'D1', clue:'The horizontal home of innovation and design foundations.', row:1, col:1, dir:'down', answer:'COLLEGE' },
+      { id:'D2', clue:'A creative field of work with data, models, and new systems.', row:1, col:4, dir:'down', answer:'DATA' },
+      { id:'D3', clue:'The team mindset that fuels project collaboration in A LOCI.', row:1, col:8, dir:'down', answer:'LAB' },
+      { id:'D4', clue:'The word for the space where ideas become real on campus.', row:4, col:11, dir:'down', answer:'STUDIO' }
+    ];
+
+    const grid = document.getElementById('crosswordGrid');
+    const acrossClues = document.getElementById('acrossClues');
+    const downClues = document.getElementById('downClues');
+    const cells = new Map();
+
+    function renderGrid() {
+      grid.innerHTML = '';
+      for (let row = 0; row < layout.length; row++) {
+        const line = layout[row].padEnd(11, '.');
+        for (let col = 0; col < 11; col++) {
+          const char = line[col];
+          const cellId = `${row + 1}-${col + 1}`;
+          const wrapper = document.createElement('div');
+          if (char === '.' || char === '#') {
+            wrapper.className = 'cell block';
+          } else {
+            wrapper.className = 'cell';
+            const input = document.createElement('input');
+            input.setAttribute('maxlength', '1');
+            input.dataset.cell = cellId;
+            input.autocomplete = 'off';
+            input.addEventListener('input', onInput);
+            input.addEventListener('keydown', onKeyDown);
+            wrapper.appendChild(input);
+            cells.set(cellId, { element: wrapper, input, solution: char.toUpperCase() });
+          }
+          grid.appendChild(wrapper);
+        }
+      }
+    }
+
+    function renderClues() {
+      entries.filter(e => e.dir === 'across').forEach(entry => {
+        const item = document.createElement('li');
+        item.innerHTML = `<strong>${entry.id}</strong> — ${entry.clue}`;
+        acrossClues.appendChild(item);
+      });
+      entries.filter(e => e.dir === 'down').forEach(entry => {
+        const item = document.createElement('li');
+        item.innerHTML = `<strong>${entry.id}</strong> — ${entry.clue}`;
+        downClues.appendChild(item);
+      });
+    }
+
+    function onInput(event) {
+      const input = event.target;
+      input.value = input.value.toUpperCase().replace(/[^A-Z]/g, '');
+      if (input.value.length === 1) {
+        const next = input.parentElement.nextElementSibling;
+        if (next && next.classList.contains('cell')) {
+          const nextInput = next.querySelector('input');
+          nextInput?.focus();
+        }
+      }
+    }
+
+    function onKeyDown(event) {
+      if (event.key === 'Backspace' && !event.target.value) {
+        const previous = event.target.parentElement.previousElementSibling;
+        if (previous && previous.classList.contains('cell')) {
+          previous.querySelector('input')?.focus();
+        }
+      }
+    }
+
+    function findEntryCells(entry) {
+      const letters = [];
+      for (let step = 0; step < entry.answer.length; step++) {
+        const row = entry.row + (entry.dir === 'down' ? step : 0);
+        const col = entry.col + (entry.dir === 'across' ? step : 0);
+        letters.push(cells.get(`${row}-${col}`));
+      }
+      return letters;
+    }
+
+    function checkAnswers() {
+      cells.forEach(({ element, input, solution }) => {
+        element.classList.remove('correct', 'incorrect');
+        if (!input.value) return;
+        element.classList.add(input.value === solution ? 'correct' : 'incorrect');
+      });
+    }
+
+    function revealAnswers() {
+      cells.forEach(({ element, input, solution }) => {
+        input.value = solution;
+        element.classList.remove('incorrect');
+        element.classList.add('correct');
+      });
+    }
+
+    function renderTimeline() {
+      const items = [
+        {
+          year: '2022', title: 'AVGAT founding',
+          description: 'Launched AVGAT to support underserved communities through digital enrollment and access services.',
+          link: 'https://sites.google.com/view/avgat/about-us',
+          linkLabel: 'View AVGAT'
+        },
+        {
+          year: '2023', title: 'Art portfolio',
+          description: 'Collected original creative work and visual storytelling in a dedicated online portfolio.',
+          link: 'https://sites.google.com/view/tanishidutt-portfolio/art',
+          linkLabel: 'View art portfolio'
+        },
+        {
+          year: '2023', title: 'Swedish Embassy collaboration',
+          description: 'Worked on a cultural or project initiative connected to the Swedish Embassy.',
+          link: 'https://sites.google.com/view/tanishidutt-portfolio/swedish-embassy?authuser=0',
+          linkLabel: 'Open Swedish Embassy'
+        },
+        {
+          year: '2024', title: 'Maths Club leadership',
+          description: 'Led maths outreach and club activities to deepen problem-solving skills and collaboration.',
+          link: 'https://sites.google.com/view/tanishidutt-portfolio/math-club?authuser=0',
+          linkLabel: 'Open Maths Club'
+        },
+        {
+          year: '2024', title: 'Research work',
+          description: 'Developed research-driven projects spanning AI, systems thinking, and design inquiry.',
+          link: 'https://sites.google.com/view/tanishidutt-portfolio/research?authuser=0',
+          linkLabel: 'Open research'
+        },
+        {
+          year: '2025', title: 'CREST Gold Award',
+          description: 'Completed the CREST Gold Award through sustained project work and leadership.',
+          link: 'https://sites.google.com/view/tanishidutt-portfolio/crest-gold-award?authuser=0',
+          linkLabel: 'Open CREST Gold'
+        }
+      ];
+
+      const list = document.getElementById('timelineList');
+      items.forEach(item => {
+        const card = document.createElement('article');
+        card.className = 'timeline-item';
+        card.innerHTML = `
+          <span>${item.year}</span>
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+          <a href="${item.link}" target="_blank" rel="noopener">${item.linkLabel}</a>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    document.getElementById('checkButton').addEventListener('click', checkAnswers);
+    document.getElementById('revealButton').addEventListener('click', revealAnswers);
+
+    renderGrid();
+    renderClues();
+    renderTimeline();
+  </script>
+</body>
+</html>
