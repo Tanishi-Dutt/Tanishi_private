@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tanishi Dutt — Carnegie Mellon University</title>
+  <style>
+    :root {
+      --cmu-red: #C41230;
+      --cmu-dark: #4A4A4A;
+      --cmu-gold: #FFB300;
+      --bg-soft: #FAFAFA;
+      --grid-line: rgba(196, 18, 48, 0.08);
+      --shadow-soft: 0 18px 50px rgba(74, 74, 74, 0.1);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --tech: #1a73e8;
+      --impact: #2e7d32;
+      --competition: #FFB300;
+      --research: #6a1b9a;
+      --sport: #e65100;
+      --arts: #c2185b;
+      --education: #00695c;
+      --work: #546e7a;
+      --destination: #C41230;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #231f20;
+      background: var(--bg-soft);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(196, 18, 48, 0.08), transparent 30%),
+        radial-gradient(circle at 90% 0%, rgba(255, 179, 0, 0.08), transparent 25%);
+      z-index: -2;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--cmu-red);
+      color: #fff;
+      text-align: center;
+      padding: 0.85rem 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(196, 18, 48, 0.18);
+    }
+
+    main {
+      overflow-x: hidden;
+    }
+
+    section {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 600ms ease, transform 600ms ease;
+    }
+
+    section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .crossword-section {
+      position: relative;
+      padding: 2.5rem 1.25rem 1.5rem;
+      background:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.92));
+      background-size: 24px 24px, 24px 24px, auto;
+    }
+
+    .shell {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .hero-copy {
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(196, 18, 48, 0.08);
+      color: var(--cmu-red);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    h1,
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      margin: 0;
+      line-height: 1.05;
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 5vw, 4.6rem);
+      max-width: 12ch;
+      margin: 0 auto 0.9rem;
+      color: #231f20;
+    }
+
+    .tagline {
+      margin: 0 auto;
+      max-width: 700px;
+      font-size: 1.08rem;
+      color: rgba(35, 31, 32, 0.78);
+      font-style: italic;
+    }
+
+    .crossword-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      gap: 1.4rem;
+      align-items: start;
+      margin-top: 2rem;
+    }
+
+    .crossword-panel,
+    .clues-panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(196, 18, 48, 0.08);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .crossword-panel {
+      padding: 1.15rem;
+    }
+
+    .grid-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .word-meta {
+      min-height: 56px;
+      flex: 1;
+    }
+
+    .word-meta strong {
+      display: block;
+      color: var(--cmu-red);
+      margin-bottom: 0.22rem;
+    }
+
+    .word-meta span {
+      display: block;
+      color: rgba(35, 31, 32, 0.72);
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 0.78rem 1.15rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 200ms ease, background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(35, 31, 32, 0.1);
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--cmu-red);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: rgba(74, 74, 74, 0.1);
+      color: var(--cmu-dark);
+    }
+
+    .grid-wrap {
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+
+    .crossword-grid {
+      display: grid;
+      grid-template-columns: repeat(19, 42px);
+      gap: 3px;
+      justify-content: start;
+      min-width: max-content;
+    }
+
+    .cell {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      border: 1px solid rgba(74, 74, 74, 0.12);
+      background: #fff;
+      transition: transform 200ms ease, border-color 200ms ease, background-color 200ms ease;
+    }
+
+    .cell:hover {
+      transform: translateY(-1px);
+      border-color: rgba(196, 18, 48, 0.35);
+    }
+
+    .cell.block {
+      background: #111;
+      border-color: #111;
+    }
+
+    .cell input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #231f20;
+      caret-color: var(--cmu-red);
+    }
+
+    .cell input[readonly] {
+      color: rgba(35, 31, 32, 0.78);
+      cursor: default;
+    }
+
+    .cell input:focus {
+      outline: none;
+    }
+
+    .cell-number {
+      position: absolute;
+      top: 3px;
+      left: 4px;
+      font-size: 0.58rem;
+      color: rgba(35, 31, 32, 0.56);
+      pointer-events: none;
+      font-weight: 700;
+    }
+
+    .cell.active-word {
+      background: rgba(196, 18, 48, 0.12);
+      border-color: rgba(196, 18, 48, 0.45);
+    }
+
+    .cell.active-cell {
+      background: rgba(196, 18, 48, 0.22);
+      border-color: var(--cmu-red);
+      box-shadow: inset 0 0 0 1px rgba(196, 18, 48, 0.25);
+    }
+
+    .cell.special {
+      background: rgba(196, 18, 48, 0.2);
+      border-color: var(--cmu-red);
+    }
+
+    .cell.special.active-word,
+    .cell.special.active-cell {
+      background: rgba(196, 18, 48, 0.32);
+    }
+
+    .cell.prefilled {
+      background: rgba(255, 179, 0, 0.12);
+      border-color: rgba(255, 179, 0, 0.3);
+    }
+
+    .cell.correct {
+      background: rgba(46, 125, 50, 0.16);
+      border-color: rgba(46, 125, 50, 0.5);
+    }
+
+    .cell.incorrect {
+      background: rgba(196, 18, 48, 0.15);
+      border-color: rgba(196, 18, 48, 0.45);
+    }
+
+    .clues-panel {
+      padding: 1.2rem;
+    }
+
+    .clues-panel h2 {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .clue-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .clue-group h3 {
+      margin: 0 0 0.7rem;
+      color: var(--cmu-red);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.78rem;
+    }
+
+    .clue-list {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .clue-item {
+      padding: 0.75rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: rgba(74, 74, 74, 0.05);
+      cursor: pointer;
+      transition: background-color 200ms ease, transform 200ms ease;
+    }
+
+    .clue-item:hover,
+    .clue-item:focus-visible,
+    .clue-item.is-active {
+      background: rgba(196, 18, 48, 0.1);
+      transform: translateX(2px);
+      outline: none;
+    }
+
+    .clue-item strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.92rem;
+    }
+
+    .clue-item span {
+      color: rgba(35, 31, 32, 0.75);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .cards-section {
+      padding: 0.5rem 1.25rem 2.4rem;
+      background: linear-gradient(180deg, #fff, #fff8f8 72%, #fff);
+    }
+
+    .cards-header {
+      max-width: 1240px;
+      margin: 0 auto 1rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
+    .cards-header h2 {
+      font-size: clamp(2.1rem, 4vw, 3.4rem);
+    }
+
+    .cards-header p {
+      margin: 0;
+      max-width: 540px;
+      color: rgba(35, 31, 32, 0.76);
+      line-height: 1.6;
+    }
+
+    .cards-row {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 200px;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 0.4rem 0 0.8rem;
+      scroll-snap-type: x proximity;
+    }
+
+    .cards-row::-webkit-scrollbar,
+    .timeline-scroll::-webkit-scrollbar,
+    .grid-wrap::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .cards-row::-webkit-scrollbar-thumb,
+    .timeline-scroll::-webkit-scrollbar-thumb,
+    .grid-wrap::-webkit-scrollbar-thumb {
+      background: rgba(74, 74, 74, 0.24);
+      border-radius: 999px;
+    }
+
+    .activity-card {
+      position: relative;
+      min-height: 220px;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid rgba(74, 74, 74, 0.12);
+      border-radius: 20px;
+      box-shadow: 0 14px 30px rgba(74, 74, 74, 0.08);
+      scroll-snap-align: start;
+      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 34px rgba(74, 74, 74, 0.12);
+      border-color: rgba(196, 18, 48, 0.22);
+    }
+
+    .activity-card .emoji {
+      font-size: 1.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .activity-card h3 {
+      margin: 0 0 0.65rem;
+      font-size: 1.05rem;
+      line-height: 1.15;
+    }
+
+    .activity-card p {
+      margin: 0;
+      color: rgba(35, 31, 32, 0.78);
+      font-size: 0.91rem;
+      line-height: 1.55;
+    }
+
+    .badge {
+      position: absolute;
+      top: 0.9rem;
+      right: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.73rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+
+    .timeline-section {
+      position: relative;
+      padding: 4rem 0 4.5rem;
+      color: #fff;
+      background:
+        linear-gradient(45deg, rgba(255,255,255,0.06) 0 6%, transparent 6% 14%, rgba(255,179,0,0.12) 14% 18%, transparent 18% 30%, rgba(196,18,48,0.16) 30% 34%, transparent 34% 50%, rgba(74,74,74,0.22) 50% 56%, transparent 56% 100%),
+        linear-gradient(-45deg, rgba(255,255,255,0.06) 0 10%, transparent 10% 22%, rgba(196,18,48,0.18) 22% 28%, transparent 28% 42%, rgba(255,179,0,0.12) 42% 47%, transparent 47% 62%, rgba(74,74,74,0.18) 62% 68%, transparent 68% 100%),
+        linear-gradient(180deg, rgba(20, 18, 18, 0.72), rgba(33, 29, 29, 0.82));
+      overflow: hidden;
+    }
+
+    .timeline-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,0.08), transparent 30%),
+        radial-gradient(circle at 80% 80%, rgba(255,179,0,0.08), transparent 26%);
+      pointer-events: none;
+    }
+
+    .timeline-header {
+      position: relative;
+      z-index: 1;
+      max-width: 1240px;
+      margin: 0 auto 1.8rem;
+      padding: 0 1.25rem;
+      text-align: center;
+    }
+
+    .timeline-header h2 {
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.65rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.42rem 0.75rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      font-size: 0.84rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.08);
+    }
+
+    .timeline-scroll {
+      position: relative;
+      z-index: 1;
+      overflow-x: auto;
+      padding: 0 1.25rem;
+    }
+
+    .timeline {
+      position: relative;
+      min-width: 3400px;
+      height: 760px;
+      margin: 0 auto;
+    }
+
+    .timeline-strands {
+      position: absolute;
+      inset: 0;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .strand-path {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.9;
+    }
+
+    .strand-shadow {
+      opacity: 0.14;
+      filter: blur(4px);
+    }
+
+    .timeline-event {
+      position: absolute;
+      width: 170px;
+      transform: translate(-50%, -50%);
+    }
+
+    .timeline-event.above .event-card {
+      bottom: calc(100% + 1rem);
+    }
+
+    .timeline-event.below .event-card {
+      top: calc(100% + 1rem);
+    }
+
+    .timeline-event.above .event-label {
+      bottom: calc(100% + 0.85rem);
+    }
+
+    .timeline-event.below .event-label {
+      top: calc(100% + 0.85rem);
+    }
+
+    .event-stem {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 2px;
+      height: 54px;
+      background: rgba(255, 255, 255, 0.38);
+      transform: translateX(-50%);
+    }
+
+    .timeline-event.above .event-stem {
+      top: auto;
+      bottom: calc(50% - 2px);
+    }
+
+    .timeline-event.below .event-stem {
+      top: calc(50% + 2px);
+    }
+
+    .event-button {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 4px solid rgba(255,255,255,0.88);
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: transform 200ms ease, box-shadow 200ms ease;
+      z-index: 3;
+    }
+
+    .event-button:hover,
+    .event-button:focus-visible {
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 0 0 10px rgba(255,255,255,0.08);
+      outline: none;
+    }
+
+    .event-button::after {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .event-card {
+      position: absolute;
+      left: 50%;
+      width: 240px;
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      padding: 0.95rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.18);
+      transform: translateX(-50%) translateY(6px);
+      transition: opacity 200ms ease, transform 200ms ease;
+      z-index: 4;
+    }
+
+    .timeline-event:hover .event-card,
+    .timeline-event:focus-within .event-card,
+    .timeline-event.is-open .event-card {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .event-year {
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .event-title {
+      margin: 0.3rem 0 0.5rem;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .event-desc {
+      margin: 0.55rem 0 0;
+      color: rgba(255,255,255,0.84);
+      line-height: 1.48;
+      font-size: 0.9rem;
+    }
+
+    .event-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.32rem 0.56rem;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .timeline-event.destination {
+      width: 220px;
+    }
+
+    .timeline-event.destination .event-button {
+      width: 34px;
+      height: 34px;
+      box-shadow: 0 0 0 12px rgba(196, 18, 48, 0.18), 0 0 30px rgba(196, 18, 48, 0.45);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+
+    .event-label {
+      position: absolute;
+      left: 50%;
+      width: 190px;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 2;
+    }
+
+    .event-label-year {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.74);
+      margin-bottom: 0.3rem;
+    }
+
+    .event-label-title {
+      display: inline-block;
+      padding: 0.48rem 0.68rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(12px);
+      font-size: 0.88rem;
+      line-height: 1.35;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.1);
+    }
+
+    .timeline-note {
+      max-width: 840px;
+      margin: 1rem auto 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.6;
+      font-size: 0.98rem;
+    }
+
+    .cmu-mark {
+      position: absolute;
+      left: 50%;
+      top: calc(50% - 82px);
+      transform: translateX(-50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 18px 18px 26px 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.24);
+      display: grid;
+      place-items: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 14px 22px rgba(0,0,0,0.16);
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 12px rgba(196, 18, 48, 0.16), 0 0 30px rgba(196, 18, 48, 0.38); }
+      50% { box-shadow: 0 0 0 18px rgba(196, 18, 48, 0.08), 0 0 34px rgba(196, 18, 48, 0.55); }
+    }
+
+    @media (max-width: 1024px) {
+      .crossword-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .clue-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .crossword-section,
+      .cards-section {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .crossword-grid {
+        grid-template-columns: repeat(19, 36px);
+      }
+
+      .cell {
+        width: 36px;
+        height: 36px;
+      }
+
+      .grid-toolbar {
+        align-items: flex-start;
+      }
+
+      .timeline {
+        height: 820px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">Tanishi Dutt — Carnegie Mellon University</div>
+  <main>
+    <section class="crossword-section fade-section" id="crossword">
+      <div class="shell">
+        <div class="hero-copy">
+          <div class="eyebrow">Portfolio in Motion</div>
+          <h1>A life told through intersections.</h1>
+          <p class="tagline">I've always thought in patterns. Here's the one that brought me to CMU.</p>
+        </div>
+        <div class="crossword-layout">
+          <div class="crossword-panel">
+            <div class="grid-toolbar">
+              <div class="word-meta" id="wordMeta" aria-live="polite"></div>
+              <div class="actions">
+                <button class="btn-secondary" id="checkBtn" type="button">Check</button>
+                <button class="btn-primary" id="revealBtn" type="button">Reveal</button>
+              </div>
+            </div>
+            <div class="grid-wrap">
+              <div class="crossword-grid" id="crosswordGrid" aria-label="Interactive crossword puzzle" role="grid"></div>
+            </div>
+          </div>
+          <aside class="clues-panel">
+            <h2>Crossword Clues</h2>
+            <div class="clue-columns">
+              <div class="clue-group">
+                <h3>Across</h3>
+                <div class="clue-list" id="acrossClues"></div>
+              </div>
+              <div class="clue-group">
+                <h3>Down</h3>
+                <div class="clue-list" id="downClues"></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="cards-section fade-section" id="cards">
+      <div class="cards-header">
+        <div>
+          <div class="eyebrow">Twelve Intersections, Eleven Stories</div>
+          <h2>What each answer really means.</h2>
+        </div>
+        <p>The clues are factual. These are the softer edges: the projects, disciplines and communities that shaped how I think, build and show up.</p>
+      </div>
+      <div class="cards-row" id="cardsRow" aria-label="Activity cards"></div>
+    </section>
+
+    <section class="timeline-section fade-section" id="timeline">
+      <div class="timeline-header">
+        <h2>Everything led here.</h2>
+        <div class="legend" id="legend"></div>
+        <p class="timeline-note">Each strand carries a different part of Tanishi forward: art, research, social impact, sport, education, work and the competitions that sharpened her. Click any moment to open the fuller story, then follow the weave as every line tightens into CMU.</p>
+      </div>
+      <div class="timeline-scroll">
+        <div class="timeline" id="timelineCanvas">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const crosswordEntries = [
+      {
+        answer: "HINDUSTANI",
+        clue: "11 years of classical vocal training, 5th-year certification — I performed live in front of 5,000 people at Harvard MUN",
+        row: 6,
+        col: 1,
+        direction: "across",
+        category: "Arts"
+      },
+      {
+        answer: "KARATE",
+        clue: "Brown belt, 7+ years, Gold medallist in Kumite and Kata at Delhi State — the sport whose loss taught me that passion lives on in others",
+        row: 9,
+        col: 10,
+        direction: "across",
+        category: "Sport"
+      },
+      {
+        answer: "AVGAT",
+        clue: "The NGO I founded at 15 — enrolled 1,000+ marginalised people in Ayushman Bharat, Aadhaar and e-Shram cards, scaling from Bangalore to villages in Jharkhand",
+        row: 4,
+        col: 8,
+        direction: "across",
+        category: "Social Impact"
+      },
+      {
+        answer: "VANI",
+        clue: "My ISL-to-text translator — amplifying voices hitherto inaudible, built with MediaPipe, OpenCV and TensorFlow",
+        row: 16,
+        col: 14,
+        direction: "across",
+        category: "Tech"
+      },
+      {
+        answer: "TANISHI",
+        clue: "The person behind all of it — arriving at CMU, finally",
+        row: 9,
+        col: 17,
+        direction: "down",
+        category: "Identity"
+      },
+      {
+        answer: "TARTAN",
+        clue: "What I'm about to become — CMU's identity, woven from many overlapping threads, just like me",
+        row: 1,
+        col: 3,
+        direction: "down",
+        category: "Education"
+      },
+      {
+        answer: "TENSORFLOW",
+        clue: "My weapon of choice — powers my pneumonia CNN, Vani, the Wharton bracket predictor, and demand forecasts at Third Wave Coffee",
+        row: 4,
+        col: 12,
+        direction: "down",
+        category: "Tech"
+      },
+      {
+        answer: "RAMANUJAN",
+        clue: "I scored a perfect 100% in the national round, after qualifying with 96% — named after history's most romantic mathematical genius",
+        row: 3,
+        col: 8,
+        direction: "down",
+        category: "Competition"
+      },
+      {
+        answer: "CREST",
+        clue: "British Science Association's highest distinction — awarded for my CNN detecting pneumonia from chest X-rays, meeting all 15 evaluation criteria",
+        row: 7,
+        col: 15,
+        direction: "down",
+        category: "Research"
+      },
+      {
+        answer: "EMPLOYOR",
+        clue: "The job-matching platform I co-built for blue-collar workers — accessible UI for low-literacy users, Java backend, real-time job discovery, no middlemen",
+        row: 6,
+        col: 19,
+        direction: "down",
+        category: "Tech"
+      },
+      {
+        answer: "SEAMO",
+        clue: "I ranked 15th across South East Asia in this maths olympiad — solving advanced algebra, geometry and number theory",
+        row: 10,
+        col: 15,
+        direction: "across",
+        category: "Competition"
+      },
+      {
+        answer: "MANIFOLD",
+        clue: "The mathematical object at the heart of my Oxford research paper — spaces that locally resemble Euclidean geometry but behave wildly in higher dimensions",
+        row: 11,
+        col: 6,
+        direction: "across",
+        category: "Research"
+      }
+    ];
+
+    const cardStories = [
+      {
+        word: "TENSORFLOW",
+        category: "Tech",
+        emoji: "💻",
+        text: "I keep returning to TensorFlow because it lets curiosity become something testable. It's the thread running through the projects where I felt most alive building."
+      },
+      {
+        word: "AVGAT",
+        category: "Social Impact",
+        emoji: "🤝",
+        text: "Avgat started because I couldn't ignore how many people were being locked out of systems meant to support them. Building it taught me that scale matters, but dignity matters even more."
+      },
+      {
+        word: "VANI",
+        category: "Tech",
+        emoji: "🧠",
+        text: "Vani came from wanting technology to listen better, not louder. It made me think about machine learning as a bridge between people rather than just a model benchmark."
+      },
+      {
+        word: "CREST",
+        category: "Research",
+        emoji: "🔬",
+        text: "The award mattered, but what stayed with me was the discipline of building something rigorous enough to be trusted. Research felt less like a competition and more like a responsibility."
+      },
+      {
+        word: "SEAMO",
+        category: "Competition",
+        emoji: "🏅",
+        text: "Math competitions are where I learned to stay calm inside complexity. I love the moment when a problem stops feeling intimidating and starts feeling beautiful."
+      },
+      {
+        word: "RAMANUJAN",
+        category: "Competition",
+        emoji: "➗",
+        text: "This one felt personal because it rewarded the kind of mathematical thinking I genuinely enjoy. Scoring 100% was thrilling, but the real joy was falling deeper in love with the subject."
+      },
+      {
+        word: "TARTAN",
+        category: "Education",
+        emoji: "🎓",
+        text: "CMU feels like a place where all my different selves can finally speak to one another. Tartan isn't just a destination to me, it's the pattern that makes the whole story cohere."
+      },
+      {
+        word: "MANIFOLD",
+        category: "Research",
+        emoji: "📐",
+        text: "Working on manifolds pulled me toward the edge of what I could understand, which is usually where I want to be. I loved learning how abstract ideas can still feel strangely physical."
+      },
+      {
+        word: "KARATE",
+        category: "Sport",
+        emoji: "🥋",
+        text: "Karate gave me discipline long before I knew how much I would need it elsewhere. Even after stepping away, it still shapes how I handle pressure, loss and grit."
+      },
+      {
+        word: "EMPLOYOR",
+        category: "Tech",
+        emoji: "⚙️",
+        text: "EmploYour made product design feel deeply human to me. Every small UI decision mattered because it could remove friction for someone already carrying enough of it."
+      },
+      {
+        word: "HINDUSTANI",
+        category: "Arts",
+        emoji: "🎶",
+        text: "Classical music trained my patience before anything else did. It taught me how to sit with repetition until it becomes expression."
+      }
+    ];
+
+    const timelineEvents = [
+      ["2012", "Hindustani Classical Music", "Arts", "Started Hindustani classical vocal training, beginning an 11-year journey to 5th-year certification"],
+      ["2013", "Fine Arts", "Arts", "Began certified Fine Arts training at Prayag Sangeet Samiti"],
+      ["2017", "Karate Begins", "Sport", "Joined Sanshinkan dojo; would train for 7+ years reaching Brown Belt and winning Gold at Delhi State Championship"],
+      ["2020", "Pure Hearts", "Social Impact", "Organised maths workshops for 100+ students and revitalised a local school in Gurugram"],
+      ["2021", "Delhi State Karate Gold", "Sport", "Won Gold in both Kumite and Kata at the Delhi State Championship"],
+      ["2022", "Avgat Founded", "Social Impact", "Founded Avgat at 15; enrolled 1,000+ marginalised people in government welfare schemes"],
+      ["2022", "Swedish Embassy Winner", "Competition", "Won the 7-day national sustainability challenge; met the Swedish Ambassador to India"],
+      ["2022", "Harvard MUN Vocalist", "Arts", "Performed live as Lead Western Vocalist in front of 5,000 people"],
+      ["2022", "NSDS National Debate", "Competition", "Represented India at the World Schools Debating Championship"],
+      ["2022", "Oriflame Internship", "Work", "Developed sustainability proposals and water-scarcity solutions at Oriflame"],
+      ["2023", "World Scholars Cup", "Competition", "Won 8 Gold Medals at International Round in Debate, Science, History and more"],
+      ["2023", "F1 in Schools Finalist", "Competition", "Designed and 3D-printed a race car; selected for National Finals in New Delhi"],
+      ["2023", "Python Course Creator", "Tech", "Built a free beginner Python course to promote digital literacy in underrepresented communities"],
+      ["2023", "Tech Optimum", "Social Impact", "Designed 4 free Python courses for individuals with limited access to digital education"],
+      ["2023", "Math Club Lead (Greenwood)", "Education", "Led Math Club, organised Pi Day, edited the annual mathematics magazine"],
+      ["2024", "EmploYour", "Tech", "Co-built a job-matching platform for blue-collar workers with accessible UI and Java backend"],
+      ["2024", "SEAMO Rank 15", "Competition", "Ranked 15th across South East Asia in the Mathematics Olympiad"],
+      ["2024", "Wharton Data Science", "Tech", "Built a TensorFlow neural network to forecast NCAA Women's Basketball bracket outcomes"],
+      ["2024", "Vani (ISL Model)", "Tech", "Built a real-time ISL gesture-to-text translator using TensorFlow, OpenCV and MediaPipe"],
+      ["2024", "Oxford Research Paper", "Research", "Independently researched algebraic properties of geometric objects across dimensions under an Oxford PhD scholar"],
+      ["2024", "IBDP Begins", "Education", "Started the IB Diploma Programme at The International School Bangalore with Physics HL, Math AA HL, Economics HL"],
+      ["2024", "Math Club Lead (TISB)", "Education", "Editor-in-Chief of school math magazine; organised Pi Day for 150 students"],
+      ["2024", "NY Academy of Sciences", "Research", "Selected for the Junior Academy; built an Ethical AI model for elderly and child cybersecurity"],
+      ["2025", "CREST Gold", "Research", "Received British Science Association's Gold Award for a CNN detecting pneumonia from chest X-rays"],
+      ["2025", "Ramanujan 100%", "Competition", "Scored a perfect 100% in the National Round of the Ramanujan Mathematics Competition"],
+      ["2025", "Third Wave Coffee AI", "Tech", "Built a modular AI agent and predictive demand models using TensorFlow and n8n at a real company"],
+      ["CMU", "Carnegie Mellon University", "Destination", "The culmination of everything above: Mathematics at CMU, Pittsburgh"]
+    ];
+
+    const categoryColors = {
+      Tech: "#1a73e8",
+      "Social Impact": "#2e7d32",
+      Competition: "#FFB300",
+      Research: "#6a1b9a",
+      Sport: "#e65100",
+      Arts: "#c2185b",
+      Education: "#00695c",
+      Work: "#546e7a",
+      Destination: "#C41230"
+    };
+
+    const rows = 16;
+    const cols = 19;
+    const gridMap = new Map();
+    const cellElements = new Map();
+    let tanishiPositions = new Set();
+    let activeEntry = null;
+    let activeDirection = "across";
+    let activeIndex = 0;
+
+    function keyFor(row, col) {
+      return row + "-" + col;
+    }
+
+    function buildGridData() {
+      crosswordEntries.forEach((entry, entryIndex) => {
+        const positions = [];
+        for (let i = 0; i < entry.answer.length; i += 1) {
+          const row = entry.row + (entry.direction === "down" ? i : 0);
+          const col = entry.col + (entry.direction === "across" ? i : 0);
+          const key = keyFor(row, col);
+          if (!gridMap.has(key)) {
+            gridMap.set(key, {
+              row,
+              col,
+              solution: entry.answer[i],
+              entries: [],
+              special: false
+            });
+          }
+          const cell = gridMap.get(key);
+          cell.entries.push({ answer: entry.answer, direction: entry.direction, index: i, entryIndex });
+          positions.push(key);
+        }
+        entry.positions = positions;
+      });
+
+      const starters = crosswordEntries
+        .slice()
+        .sort((a, b) => (a.row - b.row) || (a.col - b.col))
+        .map((entry) => keyFor(entry.row, entry.col));
+
+      let currentNumber = 1;
+      starters.forEach((startKey, i) => {
+        if (i === 0 || starters.indexOf(startKey) === i) {
+          const cell = gridMap.get(startKey);
+          if (!cell.number) {
+            cell.number = currentNumber;
+            currentNumber += 1;
+          }
+        }
+      });
+
+      crosswordEntries.forEach((entry) => {
+        entry.number = gridMap.get(keyFor(entry.row, entry.col)).number;
+      });
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById("crosswordGrid");
+      for (let row = 1; row <= rows; row += 1) {
+        for (let col = 1; col <= cols; col += 1) {
+          const key = keyFor(row, col);
+          const cellData = gridMap.get(key);
+          const cell = document.createElement("div");
+          cell.className = cellData ? "cell" : "cell block";
+          cell.dataset.row = row;
+          cell.dataset.col = col;
+          cell.setAttribute("role", "gridcell");
+
+          if (cellData) {
+            if (cellData.special) {
+              cell.classList.add("special");
+            }
+            const input = document.createElement("input");
+            input.maxLength = 1;
+            input.autocomplete = "off";
+            input.spellcheck = false;
+            input.setAttribute("aria-label", "Row " + row + " column " + col);
+            input.dataset.key = key;
+            if (cellData.number) {
+              const number = document.createElement("span");
+              number.className = "cell-number";
+              number.textContent = cellData.number;
+              cell.appendChild(number);
+            }
+            input.addEventListener("focus", () => handleCellSelection(key));
+            input.addEventListener("click", () => handleCellSelection(key, true));
+            input.addEventListener("input", (event) => handleInput(event, key));
+            input.addEventListener("keydown", (event) => handleKeydown(event, key));
+            cell.appendChild(input);
+            cellElements.set(key, cell);
+          }
+
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+    function renderClues() {
+      const across = document.getElementById("acrossClues");
+      const down = document.getElementById("downClues");
+
+      crosswordEntries.forEach((entry) => {
+        const clue = document.createElement("button");
+        clue.type = "button";
+        clue.className = "clue-item";
+        clue.dataset.answer = entry.answer;
+        clue.innerHTML = "<strong>" + entry.number + ". " + entry.answer + "</strong><span>" + entry.clue + "</span>";
+        clue.addEventListener("click", () => {
+          setActiveEntry(entry, 0, entry.direction);
+        });
+        (entry.direction === "across" ? across : down).appendChild(clue);
+      });
+    }
+
+    function getCellValue(key) {
+      const input = cellElements.get(key).querySelector("input");
+      return input.value.trim().toUpperCase();
+    }
+
+    function setCellValue(key, value) {
+      const input = cellElements.get(key).querySelector("input");
+      input.value = value;
+    }
+
+    function handleCellSelection(key, toggleDirection = false) {
+      const cellData = gridMap.get(key);
+      if (!cellData) {
+        return;
+      }
+
+      const options = cellData.entries.map((ref) => crosswordEntries[ref.entryIndex]);
+      let nextDirection = activeDirection;
+
+      if (options.length === 1) {
+        nextDirection = options[0].direction;
+      } else if (toggleDirection) {
+        nextDirection = activeDirection === "across" ? "down" : "across";
+      } else if (!options.find((entry) => entry.answer === (activeEntry && activeEntry.answer) && entry.direction === activeDirection)) {
+        nextDirection = "across";
+      }
+
+      const chosen = options.find((entry) => entry.direction === nextDirection) || options[0];
+      const index = chosen.positions.indexOf(key);
+      setActiveEntry(chosen, index >= 0 ? index : 0, nextDirection);
+    }
+
+    function setActiveEntry(entry, index = 0, direction = entry.direction) {
+      activeEntry = entry;
+      activeDirection = direction;
+      activeIndex = index;
+      updateHighlights();
+      focusActiveCell();
+      updateMeta();
+    }
+
+    function updateHighlights() {
+      document.querySelectorAll(".cell").forEach((cell) => {
+        cell.classList.remove("active-word", "active-cell");
+      });
+      document.querySelectorAll(".clue-item").forEach((clue) => {
+        clue.classList.remove("is-active");
+      });
+
+      if (!activeEntry) {
+        return;
+      }
+
+      activeEntry.positions.forEach((key, index) => {
+        const cell = cellElements.get(key);
+        cell.classList.add("active-word");
+        if (index === activeIndex) {
+          cell.classList.add("active-cell");
+        }
+      });
+
+      const activeClue = document.querySelector('.clue-item[data-answer="' + activeEntry.answer + '"]');
+      if (activeClue) {
+        activeClue.classList.add("is-active");
+      }
+    }
+
+    function focusActiveCell() {
+      if (!activeEntry) {
+        return;
+      }
+      const key = activeEntry.positions[activeIndex];
+      const input = cellElements.get(key).querySelector("input");
+      input.focus({ preventScroll: true });
+    }
+
+    function updateMeta() {
+      const meta = document.getElementById("wordMeta");
+      if (!activeEntry) {
+        meta.innerHTML = "<strong>Select a clue or cell</strong><span>Arrow keys move through the current answer. Click an intersecting cell twice to switch direction.</span>";
+        return;
+      }
+      meta.innerHTML = "<strong>" + activeEntry.number + ". " + activeEntry.answer + " (" + activeDirection + ")</strong><span>" + activeEntry.clue + "</span>";
+    }
+
+    function moveWithinEntry(step) {
+      if (!activeEntry) {
+        return;
+      }
+      const nextIndex = activeIndex + step;
+      if (nextIndex >= 0 && nextIndex < activeEntry.positions.length) {
+        activeIndex = nextIndex;
+        updateHighlights();
+        focusActiveCell();
+      }
+    }
+
+    function handleInput(event, key) {
+      const value = event.target.value.toUpperCase().replace(/[^A-Z]/g, "");
+      event.target.value = value;
+      clearCheckState();
+
+      if (!activeEntry) {
+        handleCellSelection(key);
+      }
+
+      if (value) {
+        moveWithinEntry(1);
+      }
+    }
+
+    function handleKeydown(event, key) {
+      if (!activeEntry) {
+        handleCellSelection(key);
+      }
+
+      const arrowToDirection = {
+        ArrowLeft: "across",
+        ArrowRight: "across",
+        ArrowUp: "down",
+        ArrowDown: "down"
+      };
+
+      if (event.key in arrowToDirection) {
+        event.preventDefault();
+        const wantedDirection = arrowToDirection[event.key];
+        if (activeDirection !== wantedDirection) {
+          handleCellSelection(key, true);
+          return;
+        }
+        moveWithinEntry(event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1);
+        return;
+      }
+
+      if (event.key === "Backspace") {
+        if (!event.target.value && activeIndex > 0) {
+          event.preventDefault();
+          moveWithinEntry(-1);
+          const previousKey = activeEntry.positions[activeIndex];
+          setCellValue(previousKey, "");
+        } else {
+          clearCheckState();
+        }
+        return;
+      }
+
+      if (event.key === "Tab") {
+        return;
+      }
+    }
+
+    function clearCheckState() {
+      cellElements.forEach((cell) => {
+        cell.classList.remove("correct", "incorrect");
+      });
+    }
+
+    function prefillCrossword() {
+      const tanishi = crosswordEntries.find((entry) => entry.answer === "TANISHI");
+      tanishiPositions = new Set(tanishi.positions);
+
+      gridMap.forEach((cellData, key) => {
+        const input = cellElements.get(key).querySelector("input");
+        const cell = cellElements.get(key);
+        const isTanishiCell = tanishiPositions.has(key);
+
+        if (isTanishiCell) {
+          input.value = "";
+          input.readOnly = false;
+          cell.classList.remove("prefilled");
+          return;
+        }
+
+        input.value = cellData.solution;
+        input.readOnly = true;
+        cell.classList.add("prefilled");
+      });
+    }
+
+    function checkAnswers() {
+      clearCheckState();
+      gridMap.forEach((cellData, key) => {
+        const value = getCellValue(key);
+        const cell = cellElements.get(key);
+        if (!value) {
+          return;
+        }
+        if (value === cellData.solution) {
+          cell.classList.add("correct");
+        } else {
+          cell.classList.add("incorrect");
+        }
+      });
+    }
+
+    function revealAnswers() {
+      clearCheckState();
+      gridMap.forEach((cellData, key) => {
+        setCellValue(key, cellData.solution);
+        cellElements.get(key).classList.add("correct");
+      });
+    }
+
+    function renderCards() {
+      const row = document.getElementById("cardsRow");
+      cardStories.forEach((story) => {
+        const card = document.createElement("article");
+        card.className = "activity-card";
+        card.innerHTML = `
+          <div class="badge" style="background:${categoryColors[story.category]}">${story.category}</div>
+          <div class="emoji" aria-hidden="true">${story.emoji}</div>
+          <h3>${story.word}</h3>
+          <p>${story.text}</p>
+        `;
+        row.appendChild(card);
+      });
+    }
+
+    function renderLegend() {
+      const legend = document.getElementById("legend");
+      Object.entries(categoryColors).forEach(([name, color]) => {
+        const item = document.createElement("div");
+        item.className = "legend-item";
+        item.style.color = color;
+        item.innerHTML = `<span class="legend-dot"></span><span style="color:#fff">${name}</span>`;
+        legend.appendChild(item);
+      });
+    }
+
+    function renderTimeline() {
+      const canvas = document.getElementById("timelineCanvas");
+      const width = 3400;
+      const height = 760;
+      const startX = 120;
+      const destinationX = 3250;
+      const gap = (destinationX - startX - 120) / (timelineEvents.length - 1);
+      const strandY = {
+        Arts: 160,
+        Sport: 265,
+        "Social Impact": 360,
+        Competition: 470,
+        Tech: 580,
+        Education: 640,
+        Research: 220,
+        Work: 530,
+        Destination: 400
+      };
+
+      const strandOrder = ["Arts", "Research", "Sport", "Social Impact", "Competition", "Work", "Tech", "Education"];
+      const svgNS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("class", "timeline-strands");
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svg.setAttribute("aria-hidden", "true");
+
+      strandOrder.forEach((category, index) => {
+        const y = strandY[category];
+        const drift = index % 2 === 0 ? -28 : 28;
+        const pathData = [
+          `M ${startX - 40} ${y}`,
+          `C ${width * 0.22} ${y + drift}, ${width * 0.46} ${y - drift}, ${width * 0.7} ${y + (drift * 0.6)}`,
+          `S ${destinationX - 180} ${(y + strandY.Destination) / 2}, ${destinationX} ${strandY.Destination}`
+        ].join(" ");
+
+        const shadowPath = document.createElementNS(svgNS, "path");
+        shadowPath.setAttribute("d", pathData);
+        shadowPath.setAttribute("class", "strand-path strand-shadow");
+        shadowPath.setAttribute("stroke", categoryColors[category]);
+        shadowPath.setAttribute("stroke-width", category === "Competition" ? "11" : "10");
+        svg.appendChild(shadowPath);
+
+        const mainPath = document.createElementNS(svgNS, "path");
+        mainPath.setAttribute("d", pathData);
+        mainPath.setAttribute("class", "strand-path");
+        mainPath.setAttribute("stroke", categoryColors[category]);
+        mainPath.setAttribute("stroke-width", category === "Competition" ? "7" : "6");
+        svg.appendChild(mainPath);
+      });
+
+      canvas.appendChild(svg);
+
+      timelineEvents.forEach((event, index) => {
+        const [year, title, category, description] = event;
+        const node = document.createElement("article");
+        const isDestination = category === "Destination";
+        const x = isDestination ? destinationX : startX + (index * gap);
+        const y = isDestination ? strandY.Destination : strandY[category];
+        const isAbove = (category === "Arts" || category === "Research" || category === "Sport" || category === "Education");
+        node.className = "timeline-event " + (isAbove ? "above" : "below") + (isDestination ? " destination" : "");
+        node.style.left = x + "px";
+        node.style.top = y + "px";
+
+        const chipColor = categoryColors[category];
+        node.innerHTML = `
+          ${isDestination ? '<div class="cmu-mark" aria-hidden="true">C</div>' : ""}
+          <div class="event-label">
+            <span class="event-label-year">${year}</span>
+            <span class="event-label-title">${title}</span>
+          </div>
+          <div class="event-card">
+            <div class="event-year">${year}</div>
+            <h3 class="event-title">${title}</h3>
+            <div class="event-chip" style="background:${chipColor}">${category}</div>
+            <p class="event-desc">${description}</p>
+          </div>
+          <div class="event-stem"></div>
+          <button class="event-button" type="button" aria-expanded="false" aria-label="Open details for ${title}" style="background:${chipColor}"></button>
+        `;
+
+        const button = node.querySelector(".event-button");
+        button.addEventListener("click", () => {
+          const wasOpen = node.classList.contains("is-open");
+          document.querySelectorAll(".timeline-event.is-open").forEach((openNode) => {
+            openNode.classList.remove("is-open");
+            const openButton = openNode.querySelector(".event-button");
+            if (openButton) {
+              openButton.setAttribute("aria-expanded", "false");
+            }
+          });
+          if (!wasOpen) {
+            node.classList.add("is-open");
+            button.setAttribute("aria-expanded", "true");
+          }
+        });
+
+        canvas.appendChild(node);
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".timeline-event")) {
+          document.querySelectorAll(".timeline-event.is-open").forEach((openNode) => {
+            openNode.classList.remove("is-open");
+            const openButton = openNode.querySelector(".event-button");
+            if (openButton) {
+              openButton.setAttribute("aria-expanded", "false");
+            }
+          });
+        }
+      });
+    }
+
+    function setupObservers() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.16 });
+
+      document.querySelectorAll(".fade-section").forEach((section) => observer.observe(section));
+    }
+
+    buildGridData();
+    renderGrid();
+    renderClues();
+    renderCards();
+    renderLegend();
+    renderTimeline();
+    prefillCrossword();
+    updateMeta();
+    setActiveEntry(crosswordEntries.find((entry) => entry.answer === "TARTAN"), 0, "across");
+    document.getElementById("checkBtn").addEventListener("click", checkAnswers);
+    document.getElementById("revealBtn").addEventListener("click", revealAnswers);
+    setupObservers();
+  </script>
+</body>
+</html>
